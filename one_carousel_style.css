@@ -1,0 +1,154 @@
+.elements-js {
+  width: 99999px;
+  height: 214px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 10px;
+}
+.carousel-elem-js {
+  /*float: left;*/
+  width: 400px;
+  height: 210px;
+  background-color: #46E7FF;
+  /*border: 2px solid #778899;*/
+  z-index: 1;
+  position: absolute;
+  top: 0;
+}
+.carousel-elem-js.carousel-preview-elem-js {
+  z-index: 1;
+  top: 0;
+  left: 0 !important;
+}
+.carousel-elem-js.carousel-preview-elem-js.active {
+  z-index: 2;
+}
+
+.carousel-elem-js .preview-elem-js {
+  width: 100%;
+  height: auto;
+}
+.carousel-elem-js p {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+}
+
+.carousel-container-js {
+  width: 404px;
+  /*height: 173px;*/
+  overflow-x: hidden;
+  position: relative;
+}
+.arrows-js {}
+.arrows-js > div { display: block; }
+.arrows-js > div.lastSlide { display: none; }
+
+.arrow-left-js {
+  /*width: 0;*/
+  height: 0px;
+  border-style: solid;
+  border-width: 25px 40px 25px 0;
+  border-color: transparent #ffb6c1 transparent transparent;
+  position: absolute;
+  top: 68px;
+  left: 0;
+  cursor: pointer;
+  z-index: 3;
+}
+.arrow-right-js {
+  /*width: 0;*/
+  height: 0px;
+  border-style: solid;
+  border-width: 25px 0 25px 40px;
+  border-color: transparent transparent transparent #ffb6c1;
+  position: absolute;
+  top: 68px;
+  right: 0;
+  cursor: pointer;
+  z-index: 3;
+}
+.arrow-left-js.arrow-preview-js,
+.arrow-right-js.arrow-preview-js {
+  top: 235px;
+}
+
+.one-babble-js {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  background-color: #f08080;
+  border-radius: 8px;
+  margin-right: 5px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.one-babble-js:last-child { margin-right: 0; }
+.one-babble-js.active {
+  background-color: #f063d8;
+}
+
+.one-babble-js.one-preview-babble-js {
+  width: 70px;
+  height: 70px;
+  border-radius: 0;
+  opacity: 0.7;
+}
+.one-babble-js.one-preview-babble-js.active,
+.one-babble-js.one-preview-babble-js:hover {
+  opacity: 1;
+}
+.one-babble-js img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.babbles-container-js {
+  width: 150px;
+  overflow: hidden;
+  margin: auto;
+}
+.babbles-container-js .babbles-js {
+  width: 9999px;
+}
+.moving-image-js {
+  position: absolute;
+  top: -214px;
+  right: auto;
+  height: 214px;
+  overflow: hidden;
+  z-index: 2;
+}
+
+/*Autoplay*/
+.autoblay-btn-js {
+  display: block;
+  width: 15px;
+  height: 15px;
+  background: #ff4500;
+}
+
+
+/*Анимация движения букв*/
+.carousel-elem-annotation-js {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(0,0,0,0.3);
+}
+.move-from-top-js {
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}
+.move-from-bottom-js {
+  margin: 0;
+  font-family: 'Dancing Script', 'Comic Sans MS', cursive;
+  font-weight: 700;
+  text-align: center;
+}
+
+
+
