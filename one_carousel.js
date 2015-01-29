@@ -52,18 +52,27 @@
       var arrows_right = $('<div>', {
         class: 'arrow-right-js'
       });
+      var arrows_span = $('<span>', {
+        class: ''
+      });
 
 
       $(arrows).append(arrows_left, arrows_right);
       $(carousel_container).append(arrows);
+      $(arrows_left).append(arrows_span.clone());
+      $(arrows_right).append(arrows_span.clone());
 
       /*
        * Наполняем карусельку слайдами
        */
+      var container_elements = $('<div>', {
+        class: 'container-elements-js'
+      });
+      $(carousel_container).append(container_elements);
       var elements = $('<div>', {
         class: 'elements-js'
       });
-      $(carousel_container).append(elements);
+      $(container_elements).append(elements);
 
 
       var carousel_element = self.find('.carousel-elem-js');
@@ -91,7 +100,7 @@
        */
       var count_slides = $(carousel_element).length;
       var count = count_slides-1;
-      var block_width = $(carousel_container).width(); /*ширина контейнера = расстоянию, на которое будут смещаться слайды*/
+      var block_width = $(container_elements).width(); /*ширина контейнера = расстоянию, на которое будут смещаться слайды*/
 
 
 
