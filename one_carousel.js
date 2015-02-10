@@ -160,6 +160,8 @@
         // Если нужны превьюшки вместо баблов
         if(preview_bubble) {
 
+          self.addClass('carousel-content-bubble-js');
+
           $(carousel_element).each(function(){
             $(this).addClass('carousel-preview-elem-js');
           });

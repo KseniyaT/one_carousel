@@ -39,6 +39,11 @@
   width: 500px;
   padding-left: 80px;
 }
+.carousel-content-bubble-js .carousel-container-js {
+  width: 400px;
+  padding-left: 0;
+}
+
 .container-elements-js {
   width: 404px;
   overflow-x: hidden;
@@ -102,6 +107,9 @@
 .arrow-left-js {
   top: 68px;
   left: 60px;
+}
+.arrow-left-js.arrow-preview-js {
+  left: 80px;
 }
 .arrow-left-js:after {
   display: block;
@@ -169,15 +177,25 @@
   display: inline-block;
   width: 15px;
   height: 15px;
-  background-color: #f08080;
+  background-color: #005BA9;
   border-radius: 8px;
   margin-right: 5px;
   vertical-align: middle;
   cursor: pointer;
+  -webkit-transition: all 0.5s ease 0s;
+  -moz-transition: all 0.5s ease 0s;
+  -o-transition: all 0.5s ease 0s;
+  transition: all 0.5s ease 0s;
 }
 .one-babble-js:last-child { margin-right: 0; }
 .one-babble-js.active {
-  background-color: #f063d8;
+  background-color: #FF0000;
+}
+.one-babble-js:hover {
+  background-color: #FF0000;
+  -webkit-transform: scale(1.5);
+  -moz-transform: scale(1.5);
+  transform: scale(1.5);
 }
 
 .one-babble-js.one-preview-babble-js {
@@ -189,6 +207,9 @@
 .one-babble-js.one-preview-babble-js.active,
 .one-babble-js.one-preview-babble-js:hover {
   opacity: 1;
+  -webkit-transform: none;
+  -moz-transform: none;
+  transform: none;
 }
 .one-babble-js img {
   display: block;
@@ -200,6 +221,12 @@
   width: 150px;
   overflow: hidden;
   margin: auto;
+}
+.carousel-content-bubble-js .babbles-container-js {
+  position: relative;
+  z-index: 12;
+  background-color: #FFF;
+  padding-left: 5px;
 }
 .babbles-container-js .babbles-js {
   width: 9999px;
