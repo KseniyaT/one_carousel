@@ -218,10 +218,8 @@
             var target_babble = $(this);
             /*работа по переключению слайдов*/
             var index_cur_bubble = self.find('.one-babble-js.active').data('num');
-            console.log('index_cur_bubble '+self.find('.one-babble-js.active').data('num'));
 
             var index_target_bubble = $(target_babble).data('num');
-            console.log('index_target_bubble '+$(target_babble).data('num'));
 
             self.find('.one-babble-js.active').removeClass('active');
             $(target_babble).addClass('active');
@@ -279,37 +277,120 @@
                 $(img).clone().width(carousel_width).appendTo($(moving_image));
 
 
-                for (i=0; i<n; i++) {
+                for (var i=0; i<n; i++) {
                   $(moving_image)
                     .clone().appendTo(elements)
                     .width(moving_block_width)
                     .addClass('e-'+i+'-js')
                     .css('left', i*moving_block_width+'px')
                     .find('img').css('marginLeft',-i*moving_block_width+'px')
-                    .end().animate({top: 0}, i*450,function(){
-                      if($('.e-'+(n-1)+'-js').length){
+//                    .end().animate({top: 0}, i*450,function(){
+//                      if($('.e-'+(n-1)+'-js').length){
+//                        if ($('.e-'+(n-1)+'-js').position().top == 0) {
+//                          $('.moving-image-js').each(function(){
+//                            $(this).remove();
+//                          });
+//                          //Работа по отображению слайда
+//                          $(carousel_element)
+//                            .filter(function(index) {
+//                              return $(this).data('num') == index_target_bubble;
+//                            }).addClass('active');
+//                          $(carousel_element)
+//                            .not(function(index) {
+//                              return $(this).data('num') == index_target_bubble
+//                            }).removeClass('active');
+//                        }
+//                      }
+//                    });
+
+
+
+                    // @TODO: В функцию!!!
+                    $('.e-0-js').animate({top: 0}, 500, function(){
+                      if($('.e-'+(n-1)+'-js').length) {
+
                         if ($('.e-'+(n-1)+'-js').position().top == 0) {
                           $('.moving-image-js').each(function(){
                             $(this).remove();
                           });
-                          //Работа по отображению слайда
-                          $(carousel_element)
-                            .filter(function(index) {
-                              return $(this).data('num') == index_target_bubble;
-                            }).addClass('active');
-                          $(carousel_element)
-                            .not(function(index) {
-                              return $(this).data('num') == index_target_bubble
-                            }).removeClass('active');
+                        } else {
+                          $('.e-1-js').animate({top: 0}, 500, function(){
+                            if ($('.e-'+(n-1)+'-js').position().top == 0) {
+                              $('.moving-image-js').each(function(){
+                                $(this).remove();
+                              });
+                            } else {
+                              $('.e-2-js').animate({top: 0}, 500, function(){
+                                if ($('.e-'+(n-1)+'-js').position().top == 0) {
+                                  $('.moving-image-js').each(function(){
+                                    $(this).remove();
+                                  });
+                                } else {
+                                  $('.e-3-js').animate({top: 0}, 500, function(){
+                                    if ($('.e-'+(n-1)+'-js').position().top == 0) {
+                                      $('.moving-image-js').each(function(){
+                                        $(this).remove();
+                                      });
+                                    } else {
+                                      $('.e-4-js').animate({top: 0}, 500, function(){
+                                        //Работа по отображению слайда
+                                        $(carousel_element)
+                                          .filter(function(index) {
+                                            return $(this).data('num') == index_target_bubble;
+                                          }).addClass('active');
+                                        $(carousel_element)
+                                          .not(function(index) {
+                                            return $(this).data('num') == index_target_bubble
+                                          }).removeClass('active');
+                                      })
+                                    }
+                                  })
+                                }
+                              })
+                            }
+                          })
                         }
+
                       }
+
                     });
+
+
                 };
+
+
+
+//                for (var m =0; m < 5; m++) {
+//                  lala(m, n);
+//                }
+
+
               }
             }
           });
         });
       }
+
+//      function lala(m, n){
+//        var class_name = '.e-'+m+'-js';
+//        var k = m+1;
+//        var class_name_k = '.e-'+k+'-js';
+//        $(class_name).animate({top:0}, 500, function(){
+//          if($('.e-'+(n-1)+'-js').length) {
+//            if ($('.e-'+(n-1)+'-js').position().top == 0) {
+//              $('.moving-image-js').each(function(){
+//                $(this).remove();
+//              });
+//            } else {
+//              lala(class_name_k, n);
+//            }
+//          }
+//
+//        })
+//      };
+
+
+
       /* Конец Функция обработки нажатий на баблы */
 
       /*Функция обработки нажатий стрелочек*/
