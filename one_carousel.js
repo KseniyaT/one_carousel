@@ -284,110 +284,35 @@
                     .addClass('e-'+i+'-js')
                     .css('left', i*moving_block_width+'px')
                     .find('img').css('marginLeft',-i*moving_block_width+'px')
-//                    .end().animate({top: 0}, i*450,function(){
-//                      if($('.e-'+(n-1)+'-js').length){
-//                        if ($('.e-'+(n-1)+'-js').position().top == 0) {
-//                          $('.moving-image-js').each(function(){
-//                            $(this).remove();
-//                          });
-//                          //Работа по отображению слайда
-//                          $(carousel_element)
-//                            .filter(function(index) {
-//                              return $(this).data('num') == index_target_bubble;
-//                            }).addClass('active');
-//                          $(carousel_element)
-//                            .not(function(index) {
-//                              return $(this).data('num') == index_target_bubble
-//                            }).removeClass('active');
-//                        }
-//                      }
-//                    });
-
-
-
-                    // @TODO: В функцию!!!
-                    $('.e-0-js').animate({top: 0}, 500, function(){
-                      if($('.e-'+(n-1)+'-js').length) {
-
-                        if ($('.e-'+(n-1)+'-js').position().top == 0) {
-                          $('.moving-image-js').each(function(){
-                            $(this).remove();
-                          });
-                        } else {
-                          $('.e-1-js').animate({top: 0}, 500, function(){
-                            if ($('.e-'+(n-1)+'-js').position().top == 0) {
-                              $('.moving-image-js').each(function(){
-                                $(this).remove();
-                              });
-                            } else {
-                              $('.e-2-js').animate({top: 0}, 500, function(){
-                                if ($('.e-'+(n-1)+'-js').position().top == 0) {
-                                  $('.moving-image-js').each(function(){
-                                    $(this).remove();
-                                  });
-                                } else {
-                                  $('.e-3-js').animate({top: 0}, 500, function(){
-                                    if ($('.e-'+(n-1)+'-js').position().top == 0) {
-                                      $('.moving-image-js').each(function(){
-                                        $(this).remove();
-                                      });
-                                    } else {
-                                      $('.e-4-js').animate({top: 0}, 500, function(){
-                                        //Работа по отображению слайда
-                                        $(carousel_element)
-                                          .filter(function(index) {
-                                            return $(this).data('num') == index_target_bubble;
-                                          }).addClass('active');
-                                        $(carousel_element)
-                                          .not(function(index) {
-                                            return $(this).data('num') == index_target_bubble
-                                          }).removeClass('active');
-                                      })
-                                    }
-                                  })
-                                }
-                              })
-                            }
-                          })
-                        }
-
-                      }
-
-                    });
-
-
                 };
-
-
-
-//                for (var m =0; m < 5; m++) {
-//                  lala(m, n);
-//                }
-
-
+                showFullSlade((n-1), (n-1), index_target_bubble);
               }
             }
           });
         });
       }
-
-//      function lala(m, n){
-//        var class_name = '.e-'+m+'-js';
-//        var k = m+1;
-//        var class_name_k = '.e-'+k+'-js';
-//        $(class_name).animate({top:0}, 500, function(){
-//          if($('.e-'+(n-1)+'-js').length) {
-//            if ($('.e-'+(n-1)+'-js').position().top == 0) {
-//              $('.moving-image-js').each(function(){
-//                $(this).remove();
-//              });
-//            } else {
-//              lala(class_name_k, n);
-//            }
-//          }
-//
-//        })
-//      };
+      /*Функция анимации "порезанных" частей изображения*/
+      function showFullSlade(k, kconst, n){
+        if (k>=0) {
+          var index_moving_part =  kconst-k;
+          $('.e-'+index_moving_part+'-js').animate({top:0}, 450, function(){
+            if($('.e-'+index_moving_part+'-js').length) {
+              showFullSlade(--k, kconst, n);
+            }
+          })
+        } else {
+          //Работа по отображению слайда
+          $(carousel_element).not(function(index) {
+            return index == n;
+          }).removeClass('active');
+          $(carousel_element).filter(function(index) {
+            return index == n;
+          }).addClass('active');
+          $('.moving-image-js').each(function(){
+            $(this).remove();
+          });
+        }
+      };
 
 
 
