@@ -21,15 +21,19 @@
     options = $.extend(defaults, options);
 
     return this.each(function() {
-      // Тут код плагина
 
       var self = $(this);
+      var babble = options.babble
+        , preview_bubble = options.preview_bubble
+        , autoplay = options.autoplay
+        , bubble_count = options.bubble_count
+        , moving_images_count = options.moving_images_count;
 
-      var babble = options.babble;
-      var preview_bubble = options.preview_bubble;
-      var autoplay = options.autoplay;
-      var bubble_count = options.bubble_count;
-      var moving_images_count = options.moving_images_count;
+      var carousel_element = self.find('.carousel-elem-js')
+        , count_slides = $(carousel_element).length
+        , count = count_slides-1
+        , block_width = 0;
+
 
       /*создаём контейнер для карусели*/
       var carousel_container = $('<div>', {
@@ -45,37 +49,30 @@
        */
       var arrows = $('<div>', {
         class: 'arrows-js'
-      });
-      var arrows_left = $('<div>', {
+      })
+        , arrows_left = $('<div>', {
         class: 'arrow-left-js'
-      });
-      var arrows_right = $('<div>', {
+      })
+        , arrows_right = $('<div>', {
         class: 'arrow-right-js'
       });
-      var arrows_span = $('<span>', {
-        class: ''
-      });
 
-
-      $(arrows).append(arrows_left, arrows_right);
-      $(carousel_container).append(arrows);
-      $(arrows_left).append(arrows_span.clone());
-      $(arrows_right).append(arrows_span.clone());
+      $(arrows_left).append('<span></span>');
+      $(arrows_right).append('<span></span>');
+      $(arrows).append(arrows_left, arrows_right).appendTo($(carousel_container));
 
       /*
        * Наполняем карусельку слайдами
        */
       var container_elements = $('<div>', {
         class: 'container-elements-js'
-      });
-      $(carousel_container).append(container_elements);
-      var elements = $('<div>', {
+      })
+        , elements = $('<div>', {
         class: 'elements-js'
       });
-      $(container_elements).append(elements);
+      $(container_elements).append(elements).appendTo($(carousel_container));
 
-
-      var carousel_element = self.find('.carousel-elem-js');
+      block_width = $(container_elements).width(); /*ширина контейнера = расстоянию, на которое будут смещаться слайды*/
 
       $(carousel_element).each(function(indx){
         $(this).appendTo(elements);
@@ -87,47 +84,20 @@
        * Текст на стрелочках
        */
       var left_arrow_value = options.left_arrow_value;
-      if(left_arrow_value){
-        $(arrows_left).text(left_arrow_value);
-      }
       var right_arrow_value = options.right_arrow_value;
-      if(right_arrow_value){
-        $(arrows_right).text(right_arrow_value);
+      if(left_arrow_value && right_arrow_value) {
+        setArrorText(arrows_left, arrows_right, left_arrow_value, right_arrow_value);
       }
-
-      /*
-       *Переменные, используемые в дальнейшем
-       */
-      var count_slides = $(carousel_element).length;
-      var count = count_slides-1;
-      var block_width = $(container_elements).width(); /*ширина контейнера = расстоянию, на которое будут смещаться слайды*/
-
 
 
       /*
        * Позиционируем элементы карусели подряд друг за другом, начиная с нулевого
-       */
-
-
-      var cur_slide, /*слайд, который сейчас отображается*/
-        last_left_coor_px, /*лефт координата последнего слайда до перемещения*/
-        end_coor,
-        end_coor_px; /*координа для вставки слайда за последним*/
-
-      /*
+       *
        * устанавливаем лефт координаты всех слайдов
        */
       for(i=0; i < count_slides; i++) {
         $(carousel_element).eq(i).css({left: i*block_width+'px'});
       }
-
-      last_left_coor_px = $(carousel_element).eq(count).css('left');
-
-      end_coor = parseFloat(last_left_coor_px) + block_width;
-
-      end_coor_px = end_coor + 'px';
-
-
 
       //Преднастройки
       $(carousel_element).eq(0).addClass('active');
@@ -150,41 +120,20 @@
           $(babbles).append(a_babble);
         }
 
-
-
         //Преднастройки для стрелочек
         var one_babble = self.find('.one-babble-js');
         $(one_babble).eq(0).addClass('active');
 
-
         // Если нужны превьюшки вместо баблов
         if(preview_bubble) {
 
-          self.addClass('carousel-content-bubble-js');
+          previewBuble(self, carousel_element, arrows_left, arrows_right, babbles, one_babble);
 
-          $(carousel_element).each(function(){
-            $(this).addClass('carousel-preview-elem-js');
-          });
-          $(arrows_left).addClass('arrow-preview-js');
-          $(arrows_right).addClass('arrow-preview-js');
-
-          $(one_babble).each(function(){
-            $(this).addClass('one-preview-babble-js');
-          });
-          for (i=0; i< $(one_babble).length; i++ ){
-            $(carousel_element).eq(i).find('img').clone().appendTo($(one_babble).eq(i));
-          }
-
-          $(babbles).wrap("<div class='babbles-container-js'></div>");
-          var bubble_width = bubble_count*($(one_babble).outerWidth(true));
-          $('.babbles-container-js').width(bubble_width);
-
-
-          clickPreviewBubble();
+          onClickPreviewBubble(moving_images_count, carousel_element);
           onClickPreviewArrows();
 
         } else {
-          clickSlideBubble();
+          onClickSlideBubble(carousel_element, one_babble, arrows_left, arrows_right);
           clickSlideRightArrow();
           clickSlideLeftArrow();
           doSwipe()
@@ -200,9 +149,9 @@
        */
 
       /* Функция раскраски баблов */
-      function paintBubbles(num_attribute){
+      function paintBubbles(one_babble, num_attribute){
         $(one_babble).each(function(){
-          var num_bubble_attr = $(this).data('num');
+          var num_bubble_attr = $(this).attr('data-num');
           if (num_bubble_attr === num_attribute) {
             $(this).addClass('active');
             return;
@@ -212,14 +161,13 @@
       /* Конец Функция раскраски баблов */
 
       /* Функция обработки нажатий на баблы */
-      function clickSlideBubble(){
+      function onClickSlideBubble(carousel_element, one_babble, arrows_left, arrows_right){
         $(one_babble).each(function(){
           $(this).click(function(){
             var target_babble = $(this);
             /*работа по переключению слайдов*/
-            var index_cur_bubble = self.find('.one-babble-js.active').data('num');
-
-            var index_target_bubble = $(target_babble).data('num');
+            var index_cur_bubble = self.find('.one-babble-js.active').data('num')
+              , index_target_bubble = $(target_babble).data('num');
 
             self.find('.one-babble-js.active').removeClass('active');
             $(target_babble).addClass('active');
@@ -229,9 +177,9 @@
               return;
             } else {
               $(carousel_element).each(function(){
-                var coor = (identificator_vector*block_width);
-                var carousel_coor = parseFloat($(this).css('left'));
-                var coor_px = carousel_coor - coor + 'px';
+                var coor = (identificator_vector*block_width)
+                  , carousel_coor = parseFloat($(this).css('left'))
+                  , coor_px = carousel_coor - coor + 'px';
                 $(this).animate({left: coor_px},1000, function(){
                   if($(target_babble).index()===0){
                     $(arrows_left).addClass('lastSlide');
@@ -249,7 +197,7 @@
           });
         });
       }
-      function clickPreviewBubble(){
+      function onClickPreviewBubble(moving_images_count, carousel_element){
         var n = moving_images_count
           , carousel_width = $(carousel_element).width();
         var moving_block_width = parseFloat(carousel_width/n);
@@ -283,29 +231,10 @@
                     .width(moving_block_width)
                     .addClass('e-'+i+'-js')
                     .css('left', i*moving_block_width+'px')
-                    .find('img').css('marginLeft',-i*moving_block_width+'px')
-//                    .end().animate({top: 0}, i*450,function(){
-//                      if($('.e-'+(n-1)+'-js').length){
-//                        if ($('.e-'+(n-1)+'-js').position().top == 0) {
-//                          $('.moving-image-js').each(function(){
-//                            $(this).remove();
-//                          });
-//                          //Работа по отображению слайда
-//                          $(carousel_element)
-//                            .filter(function(index) {
-//                              return $(this).data('num') == index_target_bubble;
-//                            }).addClass('active');
-//                          $(carousel_element)
-//                            .not(function(index) {
-//                              return $(this).data('num') == index_target_bubble
-//                            }).removeClass('active');
-//                        }
-//                      }
-//                    });
-
-
+                    .find('img').css('marginLeft',-i*moving_block_width+'px');
 
                     // @TODO: В функцию!!!
+
                     $('.e-0-js').animate({top: 0}, 500, function(){
                       if($('.e-'+(n-1)+'-js').length) {
 
@@ -358,38 +287,11 @@
 
                 };
 
-
-
-//                for (var m =0; m < 5; m++) {
-//                  lala(m, n);
-//                }
-
-
               }
             }
           });
         });
       }
-
-//      function lala(m, n){
-//        var class_name = '.e-'+m+'-js';
-//        var k = m+1;
-//        var class_name_k = '.e-'+k+'-js';
-//        $(class_name).animate({top:0}, 500, function(){
-//          if($('.e-'+(n-1)+'-js').length) {
-//            if ($('.e-'+(n-1)+'-js').position().top == 0) {
-//              $('.moving-image-js').each(function(){
-//                $(this).remove();
-//              });
-//            } else {
-//              lala(class_name_k, n);
-//            }
-//          }
-//
-//        })
-//      };
-
-
 
       /* Конец Функция обработки нажатий на баблы */
 
@@ -432,7 +334,7 @@
                   var num_attribute = $(this).data('num');
 
                   if(babble){
-                    paintBubbles(num_attribute);
+                    paintBubbles(one_babble, num_attribute);
                   }
 
                   if((parseFloat($(this).css('left')) === 0) && ($(this).index()==indexEl) ){
@@ -513,11 +415,6 @@
       }
       /* Конец Функции обработки клика по стрелочкам*/
 
-      //@TODO: Автоплей
-      /*
-       * Autoplay
-       */
-
       if(autoplay){
         var autoblay_btns = $('<div>', {
           class: 'autoblay-js'
@@ -529,10 +426,31 @@
         $(autoblay_btns).append(one_autoplay_btn);
       }
 
-//      function startAutoplay(){
-//
-//      }
+      function previewBuble(self, carousel_element, arrows_left, arrows_right, babbles, one_babble){
+        self.addClass('carousel-content-bubble-js');
 
+        $(carousel_element).each(function(){
+          $(this).addClass('carousel-preview-elem-js');
+        });
+        $(arrows_left).addClass('arrow-preview-js');
+        $(arrows_right).addClass('arrow-preview-js');
+
+        $(one_babble).each(function(){
+          $(this).addClass('one-preview-babble-js');
+        });
+        for (var i=0; i< $(one_babble).length; i++ ){
+          $(carousel_element).eq(i).find('img').clone().appendTo($(one_babble).eq(i));
+        }
+
+        $(babbles).wrap("<div class='babbles-container-js'></div>");
+        var bubble_width = bubble_count*($(one_babble).outerWidth(true));
+        $('.babbles-container-js').width(bubble_width);
+      }
+
+      function setArrorText(arrows_left, arrows_right, left_arrow_value, right_arrow_value){
+        $(arrows_left).text(left_arrow_value);
+        $(arrows_right).text(right_arrow_value);
+      }
 
       /*
        * Swipe
