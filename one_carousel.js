@@ -10,10 +10,9 @@
       babble: true,
       preview_bubble: false,
       bubble_count: 3,
-      moving_images_count: 5,
+      moving_images_count: 6,
       left_arrow_value: '',
       right_arrow_value: '',
-      autoplay: false,
       timer: 0,
       moving_text: false
     };
@@ -22,18 +21,13 @@
 
     return this.each(function() {
 
-      var self = $(this);
       var babble = options.babble
         , preview_bubble = options.preview_bubble
-        , autoplay = options.autoplay
         , bubble_count = options.bubble_count
         , moving_images_count = options.moving_images_count;
 
-      var carousel_element = self.find('.carousel-elem-js')
-        , count_slides = $(carousel_element).length
-        , count = count_slides-1
-        , block_width = 0;
-
+      var self = $(this)
+        , carousel_element = self.find('.carousel-elem-js');
 
       /*создаём контейнер для карусели*/
       var carousel_container = $('<div>', {
@@ -57,22 +51,22 @@
         class: 'arrow-right-js'
       });
 
-      $(arrows_left).append('<span></span>');
-      $(arrows_right).append('<span></span>');
-      $(arrows).append(arrows_left, arrows_right).appendTo($(carousel_container));
+
+      $(arrows_left).append('<span></span>').appendTo($(arrows));
+      $(arrows_right).append('<span></span>').appendTo($(arrows));
+      $(carousel_container).append(arrows);
 
       /*
        * Наполняем карусельку слайдами
        */
       var container_elements = $('<div>', {
         class: 'container-elements-js'
-      })
-        , elements = $('<div>', {
+      });
+      $(carousel_container).append(container_elements);
+      var elements = $('<div>', {
         class: 'elements-js'
       });
-      $(container_elements).append(elements).appendTo($(carousel_container));
-
-      block_width = $(container_elements).width(); /*ширина контейнера = расстоянию, на которое будут смещаться слайды*/
+      $(container_elements).append(elements);
 
       $(carousel_element).each(function(indx){
         $(this).appendTo(elements);
@@ -84,25 +78,33 @@
        * Текст на стрелочках
        */
       var left_arrow_value = options.left_arrow_value;
+      if(left_arrow_value){
+        $(arrows_left).text(left_arrow_value);
+      }
       var right_arrow_value = options.right_arrow_value;
-      if(left_arrow_value && right_arrow_value) {
-        setArrorText(arrows_left, arrows_right, left_arrow_value, right_arrow_value);
+      if(right_arrow_value){
+        $(arrows_right).text(right_arrow_value);
       }
 
+      /*
+       *Переменные, используемые в дальнейшем
+       */
+      var count_slides = $(carousel_element).length;
+      var count = count_slides-1;
+      var block_width = $(container_elements).width(); /*ширина контейнера = расстоянию, на которое будут смещаться слайды*/
 
       /*
        * Позиционируем элементы карусели подряд друг за другом, начиная с нулевого
        *
        * устанавливаем лефт координаты всех слайдов
        */
-      for(i=0; i < count_slides; i++) {
+      for(var i=0; i < count_slides; i++) {
         $(carousel_element).eq(i).css({left: i*block_width+'px'});
       }
 
       //Преднастройки
       $(carousel_element).eq(0).addClass('active');
       $(arrows_left).addClass('lastSlide');
-
 
       /*
        * Проверяем, нужны ли кружки, если да, то создаём их
@@ -124,24 +126,41 @@
         var one_babble = self.find('.one-babble-js');
         $(one_babble).eq(0).addClass('active');
 
+
         // Если нужны превьюшки вместо баблов
         if(preview_bubble) {
 
-          previewBuble(self, carousel_element, arrows_left, arrows_right, babbles, one_babble);
+          self.addClass('carousel-content-bubble-js');
 
-          onClickPreviewBubble(moving_images_count, carousel_element);
+          $(carousel_element).each(function(){
+            $(this).addClass('carousel-preview-elem-js');
+          });
+          $(arrows_left).addClass('arrow-preview-js');
+          $(arrows_right).addClass('arrow-preview-js');
+
+          $(one_babble).each(function(){
+            $(this).addClass('one-preview-babble-js');
+          });
+          for (i=0; i< $(one_babble).length; i++ ){
+            $(carousel_element).eq(i).find('img').clone().appendTo($(one_babble).eq(i));
+          }
+
+          $(babbles).wrap("<div class='babbles-container-js'></div>");
+          var bubble_width = bubble_count*($(one_babble).outerWidth(true));
+          $('.babbles-container-js').width(bubble_width);
+
+
+          clickPreviewBubble();
           onClickPreviewArrows();
 
         } else {
-          onClickSlideBubble(carousel_element, one_babble, arrows_left, arrows_right);
+          clickSlideBubble();
           clickSlideRightArrow();
           clickSlideLeftArrow();
-          doSwipe()
         }
       } else {
         clickSlideRightArrow();
         clickSlideLeftArrow();
-        doSwipe()
       }
 
       /*
@@ -149,9 +168,9 @@
        */
 
       /* Функция раскраски баблов */
-      function paintBubbles(one_babble, num_attribute){
+      function paintBubbles(num_attribute){
         $(one_babble).each(function(){
-          var num_bubble_attr = $(this).attr('data-num');
+          var num_bubble_attr = $(this).data('num');
           if (num_bubble_attr === num_attribute) {
             $(this).addClass('active');
             return;
@@ -161,13 +180,14 @@
       /* Конец Функция раскраски баблов */
 
       /* Функция обработки нажатий на баблы */
-      function onClickSlideBubble(carousel_element, one_babble, arrows_left, arrows_right){
+      function clickSlideBubble(){
         $(one_babble).each(function(){
           $(this).click(function(){
             var target_babble = $(this);
             /*работа по переключению слайдов*/
-            var index_cur_bubble = self.find('.one-babble-js.active').data('num')
-              , index_target_bubble = $(target_babble).data('num');
+            var index_cur_bubble = self.find('.one-babble-js.active').data('num');
+
+            var index_target_bubble = $(target_babble).data('num');
 
             self.find('.one-babble-js.active').removeClass('active');
             $(target_babble).addClass('active');
@@ -177,9 +197,9 @@
               return;
             } else {
               $(carousel_element).each(function(){
-                var coor = (identificator_vector*block_width)
-                  , carousel_coor = parseFloat($(this).css('left'))
-                  , coor_px = carousel_coor - coor + 'px';
+                var coor = (identificator_vector*block_width);
+                var carousel_coor = parseFloat($(this).css('left'));
+                var coor_px = carousel_coor - coor + 'px';
                 $(this).animate({left: coor_px},1000, function(){
                   if($(target_babble).index()===0){
                     $(arrows_left).addClass('lastSlide');
@@ -197,7 +217,7 @@
           });
         });
       }
-      function onClickPreviewBubble(moving_images_count, carousel_element){
+      function clickPreviewBubble(){
         var n = moving_images_count
           , carousel_width = $(carousel_element).width();
         var moving_block_width = parseFloat(carousel_width/n);
@@ -231,68 +251,36 @@
                     .width(moving_block_width)
                     .addClass('e-'+i+'-js')
                     .css('left', i*moving_block_width+'px')
-                    .find('img').css('marginLeft',-i*moving_block_width+'px');
-
-                    // @TODO: В функцию!!!
-
-                    $('.e-0-js').animate({top: 0}, 500, function(){
-                      if($('.e-'+(n-1)+'-js').length) {
-
-                        if ($('.e-'+(n-1)+'-js').position().top == 0) {
-                          $('.moving-image-js').each(function(){
-                            $(this).remove();
-                          });
-                        } else {
-                          $('.e-1-js').animate({top: 0}, 500, function(){
-                            if ($('.e-'+(n-1)+'-js').position().top == 0) {
-                              $('.moving-image-js').each(function(){
-                                $(this).remove();
-                              });
-                            } else {
-                              $('.e-2-js').animate({top: 0}, 500, function(){
-                                if ($('.e-'+(n-1)+'-js').position().top == 0) {
-                                  $('.moving-image-js').each(function(){
-                                    $(this).remove();
-                                  });
-                                } else {
-                                  $('.e-3-js').animate({top: 0}, 500, function(){
-                                    if ($('.e-'+(n-1)+'-js').position().top == 0) {
-                                      $('.moving-image-js').each(function(){
-                                        $(this).remove();
-                                      });
-                                    } else {
-                                      $('.e-4-js').animate({top: 0}, 500, function(){
-                                        //Работа по отображению слайда
-                                        $(carousel_element)
-                                          .filter(function(index) {
-                                            return $(this).data('num') == index_target_bubble;
-                                          }).addClass('active');
-                                        $(carousel_element)
-                                          .not(function(index) {
-                                            return $(this).data('num') == index_target_bubble
-                                          }).removeClass('active');
-                                      })
-                                    }
-                                  })
-                                }
-                              })
-                            }
-                          })
-                        }
-
-                      }
-
-                    });
-
-
+                    .find('img').css('marginLeft',-i*moving_block_width+'px')
                 };
-
+                showFullSlade((n-1), (n-1), index_target_bubble);
               }
             }
           });
         });
       }
-
+      /*Функция анимации "порезанных" частей изображения*/
+      function showFullSlade(k, kconst, n){
+        if (k>=0) {
+          var index_moving_part =  kconst-k;
+          $('.e-'+index_moving_part+'-js').animate({top:0}, 250, function(){
+            if($('.e-'+index_moving_part+'-js').length) {
+              showFullSlade(--k, kconst, n);
+            }
+          })
+        } else {
+          //Работа по отображению слайда
+          $(carousel_element).not(function(index) {
+            return index == n;
+          }).removeClass('active');
+          $(carousel_element).filter(function(index) {
+            return index == n;
+          }).addClass('active');
+          $('.moving-image-js').each(function(){
+            $(this).remove();
+          });
+        }
+      }
       /* Конец Функция обработки нажатий на баблы */
 
       /*Функция обработки нажатий стрелочек*/
@@ -334,7 +322,7 @@
                   var num_attribute = $(this).data('num');
 
                   if(babble){
-                    paintBubbles(one_babble, num_attribute);
+                    paintBubbles(num_attribute);
                   }
 
                   if((parseFloat($(this).css('left')) === 0) && ($(this).index()==indexEl) ){
@@ -393,7 +381,6 @@
       }
       /*Конец Функция обработки нажатий стрелочек*/
 
-
       /* Функции обработки клика по стрелочкам*/
       function clickSlideRightArrow(){
         $(arrows_right).click(function(){
@@ -415,80 +402,7 @@
       }
       /* Конец Функции обработки клика по стрелочкам*/
 
-      if(autoplay){
-        var autoblay_btns = $('<div>', {
-          class: 'autoblay-js'
-        });
-        var one_autoplay_btn = $('<div>', {
-          class: 'autoblay-btn-js'
-        });
-        $(carousel_container).append(autoblay_btns);
-        $(autoblay_btns).append(one_autoplay_btn);
-      }
-
-      function previewBuble(self, carousel_element, arrows_left, arrows_right, babbles, one_babble){
-        self.addClass('carousel-content-bubble-js');
-
-        $(carousel_element).each(function(){
-          $(this).addClass('carousel-preview-elem-js');
-        });
-        $(arrows_left).addClass('arrow-preview-js');
-        $(arrows_right).addClass('arrow-preview-js');
-
-        $(one_babble).each(function(){
-          $(this).addClass('one-preview-babble-js');
-        });
-        for (var i=0; i< $(one_babble).length; i++ ){
-          $(carousel_element).eq(i).find('img').clone().appendTo($(one_babble).eq(i));
-        }
-
-        $(babbles).wrap("<div class='babbles-container-js'></div>");
-        var bubble_width = bubble_count*($(one_babble).outerWidth(true));
-        $('.babbles-container-js').width(bubble_width);
-      }
-
-      function setArrorText(arrows_left, arrows_right, left_arrow_value, right_arrow_value){
-        $(arrows_left).text(left_arrow_value);
-        $(arrows_right).text(right_arrow_value);
-      }
-
-      /*
-       * Swipe
-       */
-
-      //@TODO: Проверить работоспособность
-      function doSwipe(){
-        var start_pageX, start_pageY, end_pageX, end_pageY, delta;
-
-        $(carousel_element).mousedown(function(e){
-          console.log('mousedown');
-          start_pageX = e.pageX;
-          start_pageY = e.pageY;
-          return(start_pageX, start_pageY);
-        });
-        $(carousel_element).mouseup(function(e){
-          end_pageX = e.pageX;
-          end_pageY = e.pageY;
-          delta = end_pageX - start_pageX;
-          console.log('mouseup+delta '+delta);
-          if (delta > 20){
-            onClickArrow(false);
-          } else if (delta < -20){
-            onClickArrow(true);
-          }
-        });
-      }
-      /*
-       * Конец Swipe
-       */
-
     });
 
   };
 })( jQuery );
-
-
-
-
-
-

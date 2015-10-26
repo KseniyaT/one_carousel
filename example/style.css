@@ -1,0 +1,33 @@
+.moving-arrow-css {
+  margin-bottom: 20px;
+}
+.slide {
+  background-color: #005BA9;
+  border: 5px solid red;
+  text-align: center;
+  box-sizing: border-box;
+}
+.slide p {
+  color: #FFF;
+  font-size: 45px;
+}
+.light-arrow .arrow-left-js,
+.light-arrow .arrow-right-js {
+  background-color: #060608;
+}
+.light-arrow .arrow-right-js:after {
+  border-color: transparent transparent transparent #060608;
+}
+.light-arrow .arrow-left-js:after {
+  border-color: transparent #060608 transparent transparent;
+}
+.light-arrow .arrow-right-js span,
+.light-arrow .arrow-left-js span {
+  background-color: #d6be76;
+}
+.light-arrow .arrow-right-js span:before {
+  border-color: transparent transparent transparent #d6be76;
+}
+.light-arrow .arrow-left-js span:before {
+  border-color: transparent #d6be76 transparent transparent;
+}

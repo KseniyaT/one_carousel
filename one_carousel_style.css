@@ -28,7 +28,7 @@
   width: 100%;
   height: auto;
 }
-.carousel-elem-js p {
+.carousel-elem-js .absoluted {
   position: absolute;
   top: 0;
   left: 0;
@@ -239,40 +239,3 @@
   overflow: hidden;
   z-index: 2;
 }
-
-
-/*Styled css*/
-.moving-arrow-css {
-  margin-bottom: 20px;
-}
-
-/*Autoplay*/
-.autoblay-btn-js {
-  display: block;
-  width: 15px;
-  height: 15px;
-  background: #ff4500;
-}
-
-
-/*Анимация движения букв*/
-.carousel-elem-annotation-js {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  background-color: rgba(0,0,0,0.3);
-}
-.move-from-top-js {
-  margin: 0;
-  text-align: center;
-  width: 100%;
-}
-.move-from-bottom-js {
-  margin: 0;
-  font-family: 'Dancing Script', 'Comic Sans MS', cursive;
-  font-weight: 700;
-  text-align: center;
-}
-
-
-
