@@ -1,7 +1,7 @@
 # one_carousel
 
 
-https://jsfiddle.net/fdd4f225/
+https://jsfiddle.net/KseniyaT/pe6y3xa3/
 
 The markup should be in this way:
 
